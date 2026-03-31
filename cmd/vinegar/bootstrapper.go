@@ -7,6 +7,27 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"strings"
+	"sync"
+
+	"codeberg.org/puregotk/puregotk/v4/adw"
+	"codeberg.org/puregotk/puregotk/v4/gio"
+	"codeberg.org/puregotk/puregotk/v4/glib"
+	"codeberg.org/puregotk/puregotk/v4/gtk"
+	"github.com/sewnie/rbxbin"
+	"github.com/sewnie/wine"
+	"github.com/vinegarhq/vinegar/internal/dirs"
+	"github.com/vinegarhq/vinegar/internal/gutil"
+	"github.com/vinegarhq/vinegar/internal/logging"
+	"github.com/vinegarhq/vinegar/internal/studiorpc"
+)
+
+var (
+	studioRegPath = `HKCU\Software\Roblox\RobloxStudio`
+	backupExport  = filepath.Join(dirs.Data, "settings.reg")
+)
+
+func (b *bootstrapper) run(args ...string) error {
 
 	if err := checkRAM(3.0); err != nil {
 		gutil.IdleAdd(func() {
