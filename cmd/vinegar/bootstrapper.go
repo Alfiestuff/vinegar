@@ -71,6 +71,11 @@ func (a *app) newBootstrapper() *bootstrapper {
 }
 
 func (b *bootstrapper) run(args ...string) error {
+	
+	if err := checkRAM(3.0); err != nil {
+		return err
+	}
+
 	if b.win.GetApplication() != nil && b.win.IsVisible() {
 		slog.Warn("Bootstrapper currently in setup, ignoring run request")
 		return nil
